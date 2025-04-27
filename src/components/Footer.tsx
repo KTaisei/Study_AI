@@ -6,20 +6,20 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} Kawakami TAISEI. All rights reserved.
+            © {new Date().getFullYear()} StudyAI プランナー. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex items-center gap-4">
             <a 
               href="#" 
               className="text-gray-600 hover:text-blue-600 transition-colors text-sm"
             >
-              Privacy Policy
+              プライバシーポリシー
             </a>
             <a 
               href="#" 
               className="text-gray-600 hover:text-blue-600 transition-colors text-sm"
             >
-              Terms of Service
+              利用規約
             </a>
             <a 
               href="#"

@@ -1,27 +1,27 @@
 import { StudyData, ScheduleData, DailySchedule, SubjectAnalysis } from '../types';
 
-// Mock AI function to generate a study schedule
+// スタディスケジュールを生成するためのモックAI関数
 export async function generateStudySchedule(studyData: StudyData): Promise<ScheduleData> {
-  // Simulate API delay
+  // APIの遅延をシミュレート
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Calculate subject performances
+  // 科目のパフォーマンスを計算する
   const subjectAnalysis = studyData.subjects.map(subject => {
-    // Calculate average performance for the subject
+    // 科目の平均パフォーマンスを計算する
     const totalScore = subject.testResults.reduce((sum, test) => sum + test.score, 0);
     const totalPossible = subject.testResults.reduce((sum, test) => sum + test.totalPossible, 0);
     const performance = Math.round((totalScore / totalPossible) * 100);
 
-    // Determine weak areas (simplified for this example)
-    const weakAreas = ["Concept understanding", "Problem solving", "Application"]
+    // 弱点を特定する（この例では簡略化されています）
+    const weakAreas = ["概念理解", "問題解決", "応用"]
       .filter(() => Math.random() > 0.5);
 
-    // Calculate time allocation based on performance
-    // Lower performing subjects get more time
+    // パフォーマンスに基づいて時間配分を計算する
+    // パフォーマンスが低い科目ほど時間を多く割り当てる
     const inversePerformance = 100 - performance;
     const timeAllocation = 2 + Math.round((inversePerformance / 100) * 10) / 2;
 
-    // Expected improvement (lower performing subjects improve more)
+    // 予想される改善度（パフォーマンスが低い科目ほど改善度が高い）
     const expectedImprovement = Math.round(15 - (performance / 10));
 
     return {
@@ -33,13 +33,13 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
     };
   });
 
-  // Generate 4 weeks of daily schedules
+  // 4週間分のデイリースケジュールを生成する
   const weeklySchedules: DailySchedule[][] = [];
   
-  // Get today's date
+  // 今日の日付を取得する
   const today = new Date();
 
-  // Helper function to check if a time slot overlaps with existing slots
+  // 時間帯が重複しているかどうかをチェックするためのヘルパー関数
   const hasTimeConflict = (
     existingSlots: { startTime: string; endTime: string }[],
     newStart: string,
@@ -60,43 +60,43 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
     });
   };
 
-  // Helper function to convert time string to minutes since midnight
+  // 時間を分単位の数値に変換するヘルパー関数
   const timeToMinutes = (time: string): number => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
   };
 
-  // Helper function to format minutes to time string
+  // 分を時間の文字列にフォーマットするヘルパー関数
   const minutesToTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   };
 
-  // Generate schedules for 4 weeks
+  // 4週間分のスケジュールを生成する
   for (let week = 0; week < 4; week++) {
     const weekSchedule: DailySchedule[] = [];
     
-    // Generate schedule for each day of the week (up to user's preferred daysPerWeek)
+    // 週の各日のスケジュールを生成する（ユーザーの希望する週あたりの勉強日数まで）
     for (let day = 0; day < 7; day++) {
-      // Skip days if beyond user's preferred study days per week
+      // ユーザーの希望する週あたりの勉強日数を超えた場合はスキップする
       if (day >= studyData.studyHabits.daysPerWeek) continue;
       
       const scheduleDate = new Date(today);
       scheduleDate.setDate(today.getDate() + (week * 7) + day);
       
-      // Create daily schedule
+      // デイリースケジュールを作成する
       const dailySchedule: DailySchedule = {
         date: scheduleDate.toISOString().split('T')[0],
         schedule: [],
       };
       
-      // Assign subjects to study
+      // 勉強する科目を割り当てる
       const shuffledSubjects = [...subjectAnalysis]
-        .sort(() => Math.random() - 0.5)  // Random order
-        .slice(0, 1 + Math.min(3, subjectAnalysis.length - 1));  // 1-3 subjects per day
+        .sort(() => Math.random() - 0.5)  // ランダムな順序
+        .slice(0, 1 + Math.min(3, subjectAnalysis.length - 1));  // 1日あたり1〜3科目
       
-      // Determine start time based on preferred time of day
+      // 希望する時間帯に基づいて開始時刻を決定する
       let baseStartHour;
       switch (studyData.studyHabits.preferredTimeOfDay) {
         case 'morning': baseStartHour = 8; break;
@@ -106,32 +106,32 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
         default: baseStartHour = 9;
       }
 
-      // Convert session duration to minutes
+      // セッションの長さを分単位に変換する
       const sessionDuration = studyData.studyHabits.sessionDuration;
-      const breakDuration = 15; // 15-minute break between sessions
+      const breakDuration = 15; // セッション間の15分の休憩
       
-      // Schedule each subject
+      // 各科目のスケジュールを作成する
       shuffledSubjects.forEach((subject, index) => {
         let startMinutes = baseStartHour * 60;
         let found = false;
         
-        // Try to find a non-conflicting time slot
-        while (!found && startMinutes < (baseStartHour + 6) * 60) { // Limit to 6 hours from base start time
+        // 重複しない時間帯を見つける
+        while (!found && startMinutes < (baseStartHour + 6) * 60) { // 基準開始時刻から6時間以内に制限する
           const endMinutes = startMinutes + sessionDuration;
           const startTime = minutesToTime(startMinutes);
           const endTime = minutesToTime(endMinutes);
           
           if (!hasTimeConflict(dailySchedule.schedule, startTime, endTime)) {
-            // Determine priority based on performance
+            // パフォーマンスに基づいて優先度を決定する
             let priority: 'low' | 'medium' | 'high';
             if (subject.currentPerformance < 60) priority = 'high';
             else if (subject.currentPerformance < 80) priority = 'medium';
             else priority = 'low';
             
-            // Get a random weak area or a general focus
+            // ランダムな弱点または一般的なフォーカスを取得する
             const focusArea = subject.weakAreas.length > 0
               ? subject.weakAreas[Math.floor(Math.random() * subject.weakAreas.length)]
-              : "General review";
+              : "一般的な復習";
             
             dailySchedule.schedule.push({
               subject: subject.name,
@@ -143,12 +143,12 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
             found = true;
           }
           
-          // Try next time slot (add session duration + break)
+          // 次の時間帯を試す（セッションの長さ + 休憩時間を追加）
           startMinutes += sessionDuration + breakDuration;
         }
       });
       
-      // Sort schedule by start time
+      // 開始時刻でスケジュールをソートする
       dailySchedule.schedule.sort((a, b) => 
         timeToMinutes(a.startTime) - timeToMinutes(b.startTime)
       );
@@ -159,20 +159,17 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
     weeklySchedules.push(weekSchedule);
   }
 
-  // Calculate overall expected improvement
+  // 全体の予想改善度を計算する
   const overallImprovement = Math.round(
     subjectAnalysis.reduce((sum, subject) => sum + subject.expectedImprovement, 0) / 
     subjectAnalysis.length
   );
 
-  // Generate recommendation
+  // 推薦を生成する
   const lowestPerformingSubject = [...subjectAnalysis]
     .sort((a, b) => a.currentPerformance - b.currentPerformance)[0];
   
-  const recommendation = `Based on your test results, I recommend focusing more time on ${lowestPerformingSubject.name} 
-    where your current performance is ${lowestPerformingSubject.currentPerformance}%. 
-    With consistent practice on ${lowestPerformingSubject.weakAreas.join(' and ')}, 
-    you could improve by approximately ${lowestPerformingSubject.expectedImprovement}% in this subject.`;
+  const recommendation = `テストの結果に基づいて、${lowestPerformingSubject.name}にもっと時間を集中することをおすすめします。現在のパフォーマンスは${lowestPerformingSubject.currentPerformance}%です。${lowestPerformingSubject.weakAreas.join('と')}の練習を継続することで、この科目の成績を約${lowestPerformingSubject.expectedImprovement}%改善することができます。`;
 
   return {
     weeklySchedules,
@@ -182,89 +179,86 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
   };
 }
 
-// Function to simulate AI chat responses
+// AIのチャット応答をシミュレートする関数
 export async function getAIResponse(
   message: string, 
   studyData: StudyData, 
   scheduleData: ScheduleData
 ): Promise<string> {
-  // Simulate API delay
+  // APIの遅延をシミュレート
   await new Promise(resolve => setTimeout(resolve, 1500));
   
-  // Simple pattern matching for common questions
+  // よくある質問のためのシンプルなパターンマッチング
   const messageLower = message.toLowerCase();
   
-  // Handle schedule adjustment requests
-  if (messageLower.includes('change schedule') || messageLower.includes('adjust schedule')) {
-    return `I'd be happy to adjust your schedule, ${studyData.name}. Based on your current plan, I've allocated the most time to ${scheduleData.subjectAnalysis[0].name} since it needs the most attention. Would you like to make changes to a specific day or subject?`;
+  // スケジュールの調整リクエストを処理する
+  if (messageLower.includes('スケジュール変更') || messageLower.includes('スケジュール調整')) {
+    return `喜んでスケジュールを調整します、${studyData.name}さん。現在の計画に基づいて、最も時間を割り当てているのは${scheduleData.subjectAnalysis[0].name}です。特定の日や科目を変更しますか？`;
   }
   
-  // Handle study strategy questions
-  if (messageLower.includes('how should i study') || messageLower.includes('study tips')) {
-    return `For effective studying, I recommend:
-1. Use active recall rather than passive review
-2. Space out your study sessions for better retention
-3. For ${scheduleData.subjectAnalysis[0].name}, focus on ${scheduleData.subjectAnalysis[0].weakAreas.join(' and ')}
-4. Take 5-minute breaks every 25 minutes to maintain focus
-5. Review material before sleeping to improve memory consolidation`;
+  // スタディ戦略の質問に対応する
+  if (messageLower.includes('どのように勉強すればいい') || messageLower.includes('勉強のヒント')) {
+    return `効果的な勉強方法としては以下をおすすめします:
+1. 受動的な復習ではなく、能動的な回想を使用する
+2. 学習セッションを間隔を空けて行い、記憶の定着を促す
+3. ${scheduleData.subjectAnalysis[0].name}については、${scheduleData.subjectAnalysis[0].weakAreas.join('と')}に焦点を当てる
+4. 集中力を維持するために、25分ごとに5分の休憩を取る
+5. 睡眠前に学習内容を復習して記憶の定着を促す`;
   }
   
-  // Handle time management questions
-  if (messageLower.includes('time management') || messageLower.includes('focus better')) {
+  // 時間管理の質問に対応する
+  if (messageLower.includes('時間管理') || messageLower.includes('集中力を高める')) {
     const focusLevel = studyData.studyHabits.focusLevel;
     let focusTips = '';
     
     if (focusLevel === 'low') {
-      focusTips = `Since you mentioned having difficulty focusing, try:
-1. Using the Pomodoro technique (25 min work, 5 min break)
-2. Eliminating distractions by putting your phone in another room
-3. Working in a designated study space
-4. Using website blockers during study sessions`;
+      focusTips = `集中力に問題がある場合は、以下を試してみてください:
+1. ポモドーロテクニックを使用する（25分の作業と5分の休憩）
+2. 携帯電話を別の部屋に置いて、注意を散漫させないようにする
+3. 指定された勉強スペースで作業する
+4. 学習セッション中にウェブサイトのブロッカーを使用する`;
     } else if (focusLevel === 'medium') {
-      focusTips = `To improve your average focus level:
-1. Set clear goals for each study session
-2. Take short breaks between subjects
-3. Use ambient noise or instrumental music to maintain concentration
-4. Consider studying at your peak energy time (${studyData.studyHabits.preferredTimeOfDay})`;
+      focusTips = `平均的な集中力を向上させるためには:
+1. 各学習セッションに明確な目標を設定する
+2. 科目ごとに短い休憩を取る
+3. 集中力を維持するために環境音やインストゥルメンタル音楽を使用する
+4. ${studyData.studyHabits.preferredTimeOfDay}にエネルギーレベルが最も高い時間帯で勉強することを検討する`;
     } else {
-      focusTips = `To maintain your already strong focus level:
-1. Challenge yourself with increasingly difficult problems
-2. Teach concepts to others to solidify understanding
-3. Use interleaving (mixing related topics) to deepen knowledge
-4. Reward yourself after completing difficult tasks`;
+      focusTips = `すでに高い集中力を維持するためには:
+1. 難しい問題に挑戦する
+2. 理解を確固たるものにするために他の人に教える
+3. 関連するトピックを混ぜて学習することで知識を深める
+4. 難しいタスクを完了した後に自分自身を褒める`;
     }
     
     return focusTips;
   }
   
-  // Handle specific subject questions
+  // 特定の科目に関する質問に対応する
   for (const subject of studyData.subjects) {
     if (messageLower.includes(subject.name.toLowerCase())) {
       const subjectAnalysis = scheduleData.subjectAnalysis.find(s => s.name === subject.name);
       
       if (subjectAnalysis) {
-        return `For ${subject.name}, your current performance is at ${subjectAnalysis.currentPerformance}%. 
-I've allocated ${subjectAnalysis.timeAllocation} hours per week to this subject.
-Focus areas: ${subjectAnalysis.weakAreas.join(', ')}.
-With consistent practice, you could improve by approximately ${subjectAnalysis.expectedImprovement}% over the next 4 weeks.`;
+        return `${subject.name}については、現在のパフォーマンスは${subjectAnalysis.currentPerformance}%です。週に${subjectAnalysis.timeAllocation}時間を割り当てています。フォーカスエリア: ${subjectAnalysis.weakAreas.join(', ')}。継続的な練習により、次の4週間で約${subjectAnalysis.expectedImprovement}%改善することができます。`;
       }
     }
   }
   
-  // Handle general how-to questions
-  if (messageLower.includes('how do i') || messageLower.includes('what should i')) {
-    return `That's a great question! Based on your study profile, I recommend focusing on consistent daily practice rather than cramming. Your schedule is designed to prioritize your weaker areas first, especially ${scheduleData.subjectAnalysis[0].name}. Would you like specific advice for any particular subject?`;
+  // 一般的な「どうすればいいか」の質問に対応する
+  if (messageLower.includes('どうすれば') || messageLower.includes('何をすれば')) {
+    return `素晴らしい質問です！あなたの学習プロフィールに基づいて、詰め込み勉強ではなく、一貫した日々の練習に重点を置くことをおすすめします。スケジュールは、最初に弱点を優先し、特に${scheduleData.subjectAnalysis[0].name}に焦点を当てるように設計されています。特定の科目について具体的なアドバイスが必要ですか？`;
   }
   
-  // Default responses for other queries
+  // その他のクエリに対するデフォルトの応答
   const defaultResponses = [
-    `Based on your study habits, I've optimized your schedule for ${studyData.studyHabits.preferredTimeOfDay} studying with ${studyData.studyHabits.sessionDuration}-minute sessions. Is there a specific part of your schedule you'd like to discuss?`,
+    `${studyData.studyHabits.preferredTimeOfDay}の勉強に最適化されたスケジュールを作成しました。セッションの長さは${studyData.studyHabits.sessionDuration}分です。スケジュールの特定の部分について話し合いたいことはありますか？`,
     
-    `Looking at your test results, I notice that ${scheduleData.subjectAnalysis[0].name} might need more attention. I've allocated more study time for this subject. Does that work for you?`,
+    `テストの結果を見ると、${scheduleData.subjectAnalysis[0].name}にもっと注意を払う必要があるようです。この科目にはもっと勉強時間を割り当てています。問題ありますか？`,
     
-    `Your schedule is designed for ${studyData.studyHabits.daysPerWeek} days per week of studying. Would you like to adjust this or any other aspect of your plan?`,
+    `スケジュールは週に${studyData.studyHabits.daysPerWeek}日の勉強を想定しています。この他の計画の側面を調整したいですか？`,
     
-    `I've analyzed your learning patterns and test results to create this personalized schedule. Following it consistently should help you improve by approximately ${scheduleData.overallImprovement}% overall. Is there anything specific you'd like to change?`
+    `学習パターンとテストの結果を分析して、このパーソナライズされたスケジュールを作成しました。これを一貫して実施することで、全体的に約${scheduleData.overallImprovement}%の改善が期待できます。変更したい点はありますか？`
   ];
   
   return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];

@@ -52,7 +52,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
                 : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
             }`}
           >
-            時間配分
+            学習時間配分
           </button>
           <button
             onClick={() => setChartType('improvement')}
@@ -62,7 +62,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
                 : 'bg-white text-gray-700 hover:bg-gray-50 border border-r border-t border-b border-gray-300'
             }`}
           >
-            成績向上予測
+            予想される成績向上
           </button>
         </div>
       </div>
@@ -70,7 +70,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
       {chartType === 'subjects' && (
         <div className="space-y-6">
           <h3 className="text-lg font-semibold text-center text-gray-800">
-            科目別の学習時間配分
+            科目別学習時間配分
           </h3>
           
           {/* Bar Chart */}
@@ -81,7 +81,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
                 <div key={subject.name} className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">{subject.name}</span>
-                    <span className="text-gray-600">{percentage}% ({subject.timeAllocation} hours)</span>
+                    <span className="text-gray-600">{percentage}% ({subject.timeAllocation}時間)</span>
                   </div>
                   <div className="h-6 bg-gray-200 rounded-full overflow-hidden">
                     <div 
@@ -95,10 +95,10 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
           </div>
           
           <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-blue-800 mb-2">AIコメント</h4>
+            <h4 className="font-semibold text-blue-800 mb-2">AIからのアドバイス</h4>
             <p className="text-blue-700">
               {scheduleData.recommendation || 
-                "Based on your test results, we've allocated more time to subjects where improvement is needed most. This balanced approach will help strengthen your weaker areas while maintaining your strengths."}
+                "テスト結果に基づいて、改善が必要な科目により多くの時間を割り当てています。この方法で、弱点を克服しながら、得意分野も維持できます。"}
             </p>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
       {chartType === 'improvement' && (
         <div className="space-y-6">
           <h3 className="text-lg font-semibold text-center text-gray-800">
-            今後の成績向上予測
+            現在の成績と予想される向上度
           </h3>
           
           {/* Performance Chart */}
@@ -117,7 +117,7 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
                 <div className="flex justify-between text-sm">
                   <span className="font-medium">{subject.name}</span>
                   <span className="text-gray-600">
-                    Current: {subject.performance}% → Expected: {subject.performance + subject.expectedImprovement}%
+                    現在: {subject.performance}% → 予想: {subject.performance + subject.expectedImprovement}%
                   </span>
                 </div>
                 <div className="h-6 bg-gray-200 rounded-full overflow-hidden relative">
@@ -141,10 +141,10 @@ export function PerformanceChart({ scheduleData }: PerformanceChartProps) {
           </div>
           
           <div className="mt-6 bg-green-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-green-800 mb-2">期待される効果</h4>
+            <h4 className="font-semibold text-green-800 mb-2">期待される成果</h4>
             <p className="text-green-700">
-              この学習プランを4週間続けると、全体的なパフォーマンスが {scheduleData.overallImprovement}% 向上する可能性があります。
-              AIがあなたの学習パターンとテスト履歴に基づいてスケジュールを最適化します。
+              このスケジュールに4週間取り組むことで、全体の成績が約{scheduleData.overallImprovement}%向上すると予想されます。
+              AIはあなたの学習パターンとテスト履歴に基づいて、最適なスケジュールを作成しています。
             </p>
           </div>
         </div>

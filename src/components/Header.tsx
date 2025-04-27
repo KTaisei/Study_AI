@@ -47,7 +47,7 @@ export function Header({ currentView, onViewChange, onReset, hasData }: HeaderPr
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">StudyAI Planner</h1>
+            <h1 className="text-xl font-bold text-gray-800">StudyAI プランナー</h1>
           </div>
 
           {/* Mobile menu button */}
@@ -60,15 +60,15 @@ export function Header({ currentView, onViewChange, onReset, hasData }: HeaderPr
 
           {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-2">
-            <NavItem view="input" icon={BookOpen} label="Study Input" />
-            <NavItem view="schedule" icon={Calendar} label="Schedule" />
-            <NavItem view="chat" icon={MessageSquare} label="AI Chat" />
+            <NavItem view="input" icon={BookOpen} label="学習情報入力" />
+            <NavItem view="schedule" icon={Calendar} label="スケジュール" />
+            <NavItem view="chat" icon={MessageSquare} label="AIチャット" />
             {hasData && (
               <button 
                 onClick={onReset}
                 className="ml-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Reset Data
+                リセット
               </button>
             )}
           </nav>
@@ -77,9 +77,9 @@ export function Header({ currentView, onViewChange, onReset, hasData }: HeaderPr
         {/* Mobile menu */}
         {menuOpen && (
           <nav className="md:hidden mt-4 flex flex-col gap-2">
-            <NavItem view="input" icon={BookOpen} label="Study Input" />
-            <NavItem view="schedule" icon={Calendar} label="Schedule" />
-            <NavItem view="chat" icon={MessageSquare} label="AI Chat" />
+            <NavItem view="input" icon={BookOpen} label="学習情報入力" />
+            <NavItem view="schedule" icon={Calendar} label="スケジュール" />
+            <NavItem view="chat" icon={MessageSquare} label="AIチャット" />
             {hasData && (
               <button 
                 onClick={() => {
@@ -88,7 +88,7 @@ export function Header({ currentView, onViewChange, onReset, hasData }: HeaderPr
                 }}
                 className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Reset Data
+                リセット
               </button>
             )}
           </nav>

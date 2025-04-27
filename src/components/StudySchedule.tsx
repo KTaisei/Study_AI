@@ -27,9 +27,9 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
   // Format date for display
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('en-US', { 
+    return new Intl.DateTimeFormat('ja-JP', { 
       weekday: 'short', 
-      month: 'short', 
+      month: 'long', 
       day: 'numeric' 
     }).format(date);
   };
@@ -61,7 +61,7 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Your Study Schedule</h2>
+          <h2 className="text-2xl font-bold text-gray-800">学習スケジュール</h2>
           
           <div className="flex mt-4 sm:mt-0">
             <button
@@ -73,7 +73,7 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
               }`}
             >
               <Calendar size={16} className="mr-1" />
-              <span>Calendar</span>
+              <span>カレンダー</span>
             </button>
             <button
               onClick={() => setViewMode('performance')}
@@ -84,7 +84,7 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
               }`}
             >
               <PieChart size={16} className="mr-1" />
-              <span>Performance</span>
+              <span>成績分析</span>
             </button>
           </div>
         </div>
@@ -105,7 +105,7 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
               </button>
               
               <h3 className="text-lg font-semibold text-gray-700">
-                Week {currentWeek + 1} of {maxWeeks}
+                第{currentWeek + 1}週 / 全{maxWeeks}週
               </h3>
               
               <button
@@ -149,13 +149,13 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
                             {slot.priority === 'high' && (
                               <span className="flex items-center text-xs font-medium text-red-700 bg-red-50 px-2 py-1 rounded">
                                 <ArrowUp size={12} className="mr-1" />
-                                High Priority
+                                優先度：高
                               </span>
                             )}
                             {slot.priority === 'low' && (
                               <span className="flex items-center text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded">
                                 <ArrowDown size={12} className="mr-1" />
-                                Low Priority
+                                優先度：低
                               </span>
                             )}
                           </div>
@@ -164,7 +164,7 @@ export function StudySchedule({ scheduleData }: StudyScheduleProps) {
                     </div>
                   ) : (
                     <div className="text-center py-4 text-gray-500">
-                      No study sessions scheduled for this day
+                      この日の学習予定はありません
                     </div>
                   )}
                 </div>

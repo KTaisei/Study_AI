@@ -166,12 +166,12 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
   return (
     <div className="max-w-3xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Study Profile</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">学習プロフィール</h2>
         
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-              Your Name
+              お名前
             </label>
             <input
               type="text"
@@ -179,7 +179,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              placeholder="Enter your name"
+              placeholder="お名前を入力してください"
               required
             />
           </div>
@@ -187,14 +187,14 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
           {/* Subjects and Test Results */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800">Subjects & Test Results</h3>
+              <h3 className="text-lg font-semibold text-gray-800">科目とテスト結果</h3>
               <button
                 type="button"
                 onClick={addSubject}
                 className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
               >
                 <PlusCircle size={18} className="mr-1" />
-                <span>Add Subject</span>
+                <span>科目を追加</span>
               </button>
             </div>
 
@@ -203,14 +203,14 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Subject Name
+                      科目名
                     </label>
                     <input
                       type="text"
                       value={subject.name}
                       onChange={(e) => updateSubject(subject.id, e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="e.g., Mathematics, History"
+                      placeholder="例：数学、国語"
                       required
                     />
                   </div>
@@ -219,7 +219,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                       type="button"
                       onClick={() => removeSubject(subject.id)}
                       className="ml-2 text-red-500 hover:text-red-700 transition-colors"
-                      aria-label="Remove subject"
+                      aria-label="科目を削除"
                     >
                       <MinusCircle size={20} />
                     </button>
@@ -228,14 +228,14 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-gray-700">Test Results</h4>
+                    <h4 className="text-sm font-medium text-gray-700">テスト結果</h4>
                     <button
                       type="button"
                       onClick={() => addTestResult(subject.id)}
                       className="flex items-center text-sm text-blue-600 hover:text-blue-800 transition-colors"
                     >
                       <PlusCircle size={16} className="mr-1" />
-                      <span>Add Result</span>
+                      <span>結果を追加</span>
                     </button>
                   </div>
 
@@ -243,7 +243,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                     <div key={test.id} className="flex flex-wrap gap-3 items-end p-3 bg-white rounded-lg border border-gray-200">
                       <div className="w-20">
                         <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Score
+                          得点
                         </label>
                         <input
                           type="number"
@@ -256,7 +256,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                       </div>
                       <div className="w-24">
                         <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Out of
+                          満点
                         </label>
                         <input
                           type="number"
@@ -269,7 +269,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                       </div>
                       <div className="flex-grow">
                         <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Date
+                          テスト日
                         </label>
                         <input
                           type="date"
@@ -284,7 +284,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                           type="button"
                           onClick={() => removeTestResult(subject.id, test.id)}
                           className="text-red-500 hover:text-red-700 transition-colors"
-                          aria-label="Remove test result"
+                          aria-label="テスト結果を削除"
                         >
                           <MinusCircle size={18} />
                         </button>
@@ -298,28 +298,28 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
 
           {/* Study Habits */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Study Habits</h3>
+            <h3 className="text-lg font-semibold text-gray-800">学習習慣</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Preferred Time of Day
+                  希望する学習時間帯
                 </label>
                 <select
                   value={formData.studyHabits.preferredTimeOfDay}
                   onChange={(e) => updateStudyHabits('preferredTimeOfDay', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
-                  <option value="morning">Morning</option>
-                  <option value="afternoon">Afternoon</option>
-                  <option value="evening">Evening</option>
-                  <option value="night">Night</option>
+                  <option value="morning">朝（8:00-12:00）</option>
+                  <option value="afternoon">午後（13:00-17:00）</option>
+                  <option value="evening">夕方（18:00-21:00）</option>
+                  <option value="night">夜（20:00-24:00）</option>
                 </select>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Preferred Session Duration (minutes)
+                  1回の学習時間（分）
                 </label>
                 <input
                   type="number"
@@ -334,7 +334,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Study Days Per Week
+                  週の学習日数
                 </label>
                 <input
                   type="number"
@@ -348,16 +348,16 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Focus Level
+                  集中力レベル
                 </label>
                 <select
                   value={formData.studyHabits.focusLevel}
                   onChange={(e) => updateStudyHabits('focusLevel', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
-                  <option value="low">Low (easily distracted)</option>
-                  <option value="medium">Medium (average focus)</option>
-                  <option value="high">High (good concentration)</option>
+                  <option value="low">低め（集中が続きにくい）</option>
+                  <option value="medium">普通（平均的な集中力）</option>
+                  <option value="high">高め（集中力が持続する）</option>
                 </select>
               </div>
             </div>
@@ -375,7 +375,7 @@ export function StudyInputForm({ studyData, onDataSubmit }: StudyInputFormProps)
                 }
               `}
             >
-              Generate Study Plan
+              学習プランを生成
               <ArrowRight size={18} />
             </button>
           </div>

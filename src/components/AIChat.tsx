@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot } from 'lucide-react';
 import { StudyData, ScheduleData } from '../types';
-import { getAIResponse } from '../services/ai';
+import { getAIResponse, generateStudySchedule } from '../services/ai';
 
 interface Message {
   id: string;
@@ -19,7 +19,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: `Hello ${studyData.name}! I'm your personal study assistant. I've analyzed your test results and created a personalized study plan. Feel free to ask me any questions about your schedule, study strategies, or if you need adjustments to your plan.`,
+      text: `こんにちは、${studyData.name}さん！私はあなたの学習アシスタントです。テスト結果を分析し、個別の学習プランを作成しました。スケジュールや学習戦略について、また計画の調整が必要な場合は、お気軽にご質問ください。`,
       sender: 'ai',
       timestamp: new Date(),
     },
@@ -51,7 +51,21 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
     setIsLoading(true);
     
     try {
-      // Get AI response
+      // Check if the message is requesting a schedule regeneration
+      if (inputMessage.includes('スケジュール') && 
+          (inputMessage.includes('再生成') || inputMessage.includes('作り直し'))) {
+        const newSchedule = await generateStudySchedule(studyData);
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: 'はい、新しいスケジュールを生成しました。スケジュールタブで確認できます。',
+          sender: 'ai',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
+      // Get AI response for other messages
       const response = await getAIResponse(inputMessage, studyData, scheduleData);
       
       // Add AI message
@@ -69,7 +83,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
       // Add error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Sorry, I encountered an error. Please try again later.',
+        text: '申し訳ありません。エラーが発生しました。後でもう一度お試しください。',
         sender: 'ai',
         timestamp: new Date(),
       };
@@ -82,7 +96,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
   
   // Format timestamp
   const formatTimestamp = (timestamp: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('ja-JP', {
       hour: 'numeric',
       minute: 'numeric',
     }).format(timestamp);
@@ -92,8 +106,8 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
     <div className="max-w-3xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
         <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
-          <h2 className="text-xl font-bold text-gray-800">AI Study Assistant</h2>
-          <p className="text-sm text-gray-600">Ask questions about your study schedule or get advice</p>
+          <h2 className="text-xl font-bold text-gray-800">AI学習アシスタント</h2>
+          <p className="text-sm text-gray-600">学習スケジュールについて質問したり、アドバイスを求めたりできます</p>
         </div>
         
         <div className="flex-grow overflow-y-auto p-4 space-y-4">
@@ -117,7 +131,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
                     <User size={16} className="mr-1.5 text-white" />
                   )}
                   <span className={`text-xs ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
-                    {message.sender === 'user' ? 'You' : 'Study AI'} • {formatTimestamp(message.timestamp)}
+                    {message.sender === 'user' ? 'あなた' : 'AI'} • {formatTimestamp(message.timestamp)}
                   </span>
                 </div>
                 <div className="whitespace-pre-wrap">{message.text}</div>
@@ -131,7 +145,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
                 <div className="flex items-center">
                   <Bot size={16} className="mr-1.5 text-blue-600" />
                   <span className="text-xs text-gray-500">
-                    Study AI is typing...
+                    AIが返信を作成中...
                   </span>
                 </div>
                 <div className="flex space-x-1 mt-2">
@@ -158,7 +172,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
               type="text"
               value={inputMessage}
               onChange={e => setInputMessage(e.target.value)}
-              placeholder="Ask a question about your study plan..."
+              placeholder="学習プランについて質問してください..."
               className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               disabled={isLoading}
             />
