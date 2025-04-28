@@ -99,10 +99,10 @@ export async function generateStudySchedule(studyData: StudyData): Promise<Sched
       // 希望する時間帯に基づいて開始時刻を決定する
       let baseStartHour;
       switch (studyData.studyHabits.preferredTimeOfDay) {
-        case '朝': baseStartHour = 8; break;
-        case '午後': baseStartHour = 13; break;
-        case '夕方': baseStartHour = 18; break;
-        case '夜': baseStartHour = 20; break;
+        case 'Morning': baseStartHour = 8; break;
+        case 'Afternoon': baseStartHour = 13; break;
+        case 'Evening': baseStartHour = 18; break;
+        case 'Night': baseStartHour = 20; break;
         default: baseStartHour = 9;
       }
 

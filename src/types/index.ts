@@ -13,7 +13,7 @@ export interface Subject {
 }
 
 export interface StudyHabits {
-  preferredTimeOfDay: '朝' | '午後' | '夕方' | '夜';
+  preferredTimeOfDay: 'Morning' | 'Afternoon' | 'Evening' | 'Night';
   sessionDuration: number;
   daysPerWeek: number;
   focusLevel: 'low' | 'medium' | 'high';
