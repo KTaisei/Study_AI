@@ -47,7 +47,7 @@ export function Header({ currentView, onViewChange, onReset, hasData }: HeaderPr
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">StudyAI プランナー</h1>
+            <h1 className="text-xl font-bold text-gray-800">Study Next AI</h1>
           </div>
 
           {/* Mobile menu button */}

@@ -13,7 +13,7 @@ export interface Subject {
 }
 
 export interface StudyHabits {
-  preferredTimeOfDay: 'Morning' | 'Afternoon' | 'Evening' | 'Night';
+  preferredTimeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   sessionDuration: number;
   daysPerWeek: number;
   focusLevel: 'low' | 'medium' | 'high';

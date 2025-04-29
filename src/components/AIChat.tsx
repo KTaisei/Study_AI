@@ -106,7 +106,7 @@ export function AIChat({ studyData, scheduleData }: AIChatProps) {
     <div className="max-w-3xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
         <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
-          <h2 className="text-xl font-bold text-gray-800">AI学習アシスタント</h2>
+          <h2 className="text-xl font-bold text-gray-800">Study Next AI</h2>
           <p className="text-sm text-gray-600">学習スケジュールについて質問したり、アドバイスを求めたりできます</p>
         </div>
         
